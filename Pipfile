@@ -1,0 +1,26 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+django = "*"
+djangorestframework = "*"
+psycopg2 = "*"
+django-environ = "*"
+django-better-admin-arrayfield = "*"
+djangorestframework-jsonapi = "*"
+pillow = "*"
+install = "*"
+django-ckeditor = "*"
+django-rest-swagger = "*"
+django-allauth = "*"
+django-rest-auth = {extras = ["with_social"], version = "*"}
+pyyaml = "*"
+uritemplate = "*"
+drf-yasg = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.9"
