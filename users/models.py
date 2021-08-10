@@ -31,7 +31,7 @@ class CustomUser(AbstractUser):
             return True
         if bool(
                 self.last_subscription and self.duration_subscription and
-                (self.last_subscription + self.duration_subscription < timezone.now())
+                (self.last_subscription + self.duration_subscription > timezone.now())
         ):
             return True
         return False

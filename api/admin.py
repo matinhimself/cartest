@@ -1,16 +1,13 @@
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
 from django.db.models import Count
 from django_better_admin_arrayfield.admin.mixins import DynamicArrayMixin
 from django_better_admin_arrayfield.models.fields import ArrayField
 
 from .models import  Question, Category, BlogPost, Choice
 
-admin.site.site_header = 'My project'  # default: "Django Administration"
-# admin.site.index_title = 'Features area'  # default: "Site administration"
-admin.site.site_title = 'HTML title from adminsitration'  #
-
+admin.site.site_header = 'Cartest'
+admin.site.site_title = 'Admin panel'
 
 
 @admin.register(BlogPost)

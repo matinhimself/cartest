@@ -11,7 +11,7 @@ from rest_framework_json_api.views import ModelViewSet
 
 from .models import Question, BlogPost, Category
 from .permissions import IsAuthorOrReadOnly, IsSuperUserOrReadOnly
-from .serializers import QuestionSerializer, BlogQuerySetSerializer
+from .serializers import QuestionSerializer, BlogQuerySetSerializer, TagSerializer
 
 
 class JsonApiViewSet(ModelViewSet):
@@ -28,9 +28,10 @@ class JsonApiViewSet(ModelViewSet):
 
 
 def get_user(request):
-    if not hasattr(request, '_cached_user'):
-        request._cached_user = auth.get_user(request)
-    return request._cached_user
+    return  auth.get_user(request)
+    # if not hasattr(request, '_cached_user'):
+    #     request._cached_user = auth.get_user(request)
+    # return request._cached_user
 
 
 class TagRetrieveView(ListAPIView):
@@ -39,7 +40,7 @@ class TagRetrieveView(ListAPIView):
 
     def get_queryset(self):
         title = self.kwargs.get('title')
-        if self.request.user and self.request.user.is_subscribed():
+        if is_subscribed(self.request.user):
             return Question.objects.filter(tags__title=title)
         else:
             return Question.objects.filter(tags__title=title, visibility='p')
@@ -47,7 +48,7 @@ class TagRetrieveView(ListAPIView):
 
 class TagListView(ListAPIView):
     permission_classes = (IsSuperUserOrReadOnly,)
-    serializer_class = QuestionSerializer
+    serializer_class = TagSerializer
     queryset = Category.objects.all()
 
 
@@ -56,7 +57,7 @@ class QuestionRetrieve(RetrieveAPIView):
     permission_classes = (IsAuthenticated, IsSuperUserOrReadOnly)
 
     def get_queryset(self):
-        if self.request.user and self.request.user.is_authenticated and self.request.user.is_subscribed():
+        if is_subscribed(self.request.user):
             return Question.objects.all()
         else:
             return Question.objects.filter(visibility='p')
@@ -69,7 +70,7 @@ class QuestionListView(ListAPIView):
     serializer_class = QuestionSerializer
 
     def get_queryset(self):
-        if self.request.user and self.request.user.is_authenticated and self.request.user.is_subscribed():
+        if is_subscribed(self.request.user):
             return Question.objects.all()
         else:
             return Question.objects.filter(visibility='p')
@@ -89,6 +90,7 @@ class QuestionListView(ListAPIView):
 #     serializer_class = BlogQuerySetSerializer
 #     queryset = BlogPost.objects.filter(status__exact='p')
 
+
 class BlogPostListView(ListAPIView):
     permission_classes = (IsAuthorOrReadOnly,)
     serializer_class = BlogQuerySetSerializer
@@ -97,12 +99,18 @@ class BlogPostListView(ListAPIView):
     queryset = BlogPost.objects.filter(status='p')
 
     def get_queryset(self):
-        if self.request.user and self.request.user.is_authenticated and self.request.user.is_subscribed():
+        if is_subscribed(self.request.user):
             return BlogPost.objects.filter(status='p')
         else:
             return BlogPost.objects.filter(status='p', visibility='p')
 
     context_object_name = 'blog_posts'
+
+
+def is_subscribed(user):
+    if user and user.is_authenticated and user.is_subscribed():
+        return True
+    return False
 
 
 class BlogPostDetailView(RetrieveAPIView):
