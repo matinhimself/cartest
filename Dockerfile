@@ -5,11 +5,11 @@ ENV PYTHONBUFFERED 1
 
 RUN pip install pipenv
 
-COPY Pipfile* ./app/
+COPY . ./app
+
 RUN cd /app && pipenv lock --keep-outdated --requirements > requirements.txt
 RUN pip install -r /app/requirements.txt
 
-COPY . ./app/
 
 WORKDIR /app
 

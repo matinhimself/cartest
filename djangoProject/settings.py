@@ -25,7 +25,7 @@ environ.Env.read_env()
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'gs-)1=#($skk^cna$slz&#q!f69@4z+52$@ewhkv%akzf&#7-!'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -129,7 +129,7 @@ DATABASES = {
         'NAME': env('DATABASE_NAME'),
         'USER': env('DATABASE_USER'),
         'PASSWORD': env('DATABASE_PASS'),
-        'HOST': env('DATABASE_HOST'),
+        'HOST': env('DATABASE_HOST', default="localhost"),
         'PORT': env('DATABASE_PORT'),
     }
 }
@@ -238,6 +238,8 @@ ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 SITE_ID = 1
 
 OLD_PASSWORD_FIELD_ENABLED = True
+
+ALLOWED_HOSTS = env("DJANGO_ALLOWED_HOSTS").split(" ")
 
 
 # EMAIL_HOST = 'smtp.gmail.com'

@@ -1,26 +1,48 @@
 version: "3.8"
 services:
   web:
-
     build:
       context: .
       dockerfile: Dockerfile
+    env_file:
+      - ./.env.dev
     ports:
       - 8001:8001
     volumes:
       - .:/app
     depends_on:
-      - db
+      - w8p7
+      - migration
       
   db:
     image: postgres:10.5
     restart: always
-    environment:
-      - POSTGRES_USER=myuser
-      - POSTGRES_PASSWORD=myuserpassword
-      - POSTGRES_DB=mydb
+    env_file:
+      - ./.env.db
     ports:
       - "5433:5432"
 
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
+
+  w8p7:
+    build: .
+    image: app
+    command: bash -c  "while !</dev/tcp/db/5432; do sleep 1; done;"
+    links:
+      - db
+    depends_on:
+      - db
+
+  migration:
+    build: .
+    env_file:
+      - ./.env.dev
+    image: app
+    command: python manage.py migrate
+    volumes:
+      - .:/code
+    links:
+      - db
+    depends_on:
+      - w8p7
