@@ -4,11 +4,17 @@ from allauth.account.utils import setup_user_email
 from allauth.utils import email_address_exists
 from rest_framework import serializers
 
+from users.models import CustomUser
 
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ('first_name', 'last_name', 'id')
 
 
 class CustomSerializer(serializers.Serializer):
-    email = serializers.EmailField(required=allauth_settings.EMAIL_REQUIRED)
+    email = serializers.EmailField(required=True)
     first_name = serializers.CharField(required=True, write_only=True)
     last_name = serializers.CharField(required=False, write_only=True, allow_null=True, allow_blank=True)
     password1 = serializers.CharField(write_only=True)
@@ -16,10 +22,9 @@ class CustomSerializer(serializers.Serializer):
 
     def validate_email(self, email):
         email = get_adapter().clean_email(email)
-        if allauth_settings.UNIQUE_EMAIL:
-            if email and email_address_exists(email):
-                raise serializers.ValidationError(
-                    ("A user is already registered with this e-mail address."))
+        if email and email_address_exists(email):
+            raise serializers.ValidationError(
+                ("A user is already registered with this e-mail address."))
         return email
 
     def validate_password1(self, password):

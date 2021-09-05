@@ -141,15 +141,15 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    # },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    # },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    # },
 ]
 
 # Internationalization
@@ -176,6 +176,9 @@ STATICFILES_DIRS = [
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+# exam question count
+EXAM_SIZE = 30
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = 'static/'
 
@@ -188,10 +191,10 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ),
-    # 'PAGE_SIZE': 10,
+    'PAGE_SIZE': 10,
     # 'EXCEPTION_HANDLER': 'rest_framework_json_api.exceptions.exception_handler',
-    # 'DEFAULT_PAGINATION_CLASS':
-    #     'rest_framework_json_api.pagination.JsonApiPageNumberPagination',
+    'DEFAULT_PAGINATION_CLASS':
+        'rest_framework_json_api.pagination.JsonApiPageNumberPagination',
     # 'DEFAULT_PARSER_CLASSES': (
     #     'rest_framework_json_api.parsers.JSONParser',
     #     'rest_framework.parsers.FormParser',
@@ -236,6 +239,7 @@ ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 # ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = '/?verification=1'
 
 SITE_ID = 1
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 OLD_PASSWORD_FIELD_ENABLED = True
 

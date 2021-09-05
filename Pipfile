@@ -19,6 +19,7 @@ django-rest-auth = {extras = ["with_social"], version = "*"}
 pyyaml = "*"
 uritemplate = "*"
 drf-yasg = "*"
+ipython = "*"
 
 [dev-packages]
 

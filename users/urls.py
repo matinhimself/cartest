@@ -3,6 +3,8 @@ from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path, include
 
-urlpatterns = [
+from users.views import ProfileView
 
+urlpatterns = [
+    path(r"profile/<str:pk>", ProfileView.as_view()),
 ]

@@ -42,24 +42,9 @@ class Category(models.Model):
         return self.title
 
 
-# class UserModel(AbstractUser):
-#     last_subscription = models.DateTimeField(default=None, blank=True, null=True)
-#     duration_subscription = models.DurationField(default=datetime.timedelta(days=0))
-#
-#     def is_subscribed(self):
-#         if self.is_superuser or self.is_staff:
-#             return True
-#         if bool(
-#                 self.last_subscription and self.duration_subscription and
-#                 (self.last_subscription + self.duration_subscription < timezone.now())
-#         ):
-#             return True
-#         return False
-
-
 class Question(BaseModel):
-    visibility = models.CharField(max_length=1, choices=VIS_CHOICES, default='l')
     text = RichTextUploadingField()
+    visibility = models.CharField(max_length=1, choices=VIS_CHOICES, default='l')
 
     hints = ArrayField(
         models.TextField(),
@@ -74,16 +59,41 @@ class Question(BaseModel):
         related_query_name="tags"
     )
 
-    votes = models.PositiveSmallIntegerField(default=0)
     answer = models.PositiveSmallIntegerField(default=0, blank=True)
-
     publish = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        ordering = ('votes',)
+    likes = models.ManyToManyField(CustomUser, 'likes')
 
     def __str__(self):
         return self.text
+
+
+class Exam(BaseModel):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='exams')
+    start_time = models.DateTimeField(auto_now=True)
+    end_time = models.DateTimeField(auto_now=True)
+    finished = models.BooleanField(default=False, blank=True)
+
+
+class QuestionSet(BaseModel):
+    name = models.CharField(max_length=200)
+    description = models.TextField(max_length=1000, blank=True)
+    questions = models.ManyToManyField(Question, related_name='questions', blank=True)
+    visibility = models.CharField(max_length=1, choices=VIS_CHOICES, default='l')
+    is_private = models.BooleanField()
+    author = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
+    likes = models.ManyToManyField(CustomUser, related_name='setlikes')
+
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.__str__()
+
+
+class ExamResults(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    exam = models.ForeignKey(Exam, on_delete=models.SET_NULL, null=True)
+    score = models.Count
 
 
 class Choice(BaseModel):

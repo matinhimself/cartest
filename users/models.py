@@ -1,4 +1,5 @@
 import datetime
+import uuid
 
 from django.conf.urls import url
 from django.contrib.auth.models import AbstractUser
@@ -12,6 +13,7 @@ from .managers import CustomUserManager
 
 
 class CustomUser(AbstractUser):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     username = None
     email = models.EmailField(_('email address'), unique=True)
 
@@ -20,8 +22,8 @@ class CustomUser(AbstractUser):
 
     objects = CustomUserManager()
 
-    spouse_name = models.CharField(blank=True, max_length=100)
-    date_of_birth = models.DateField(blank=True, null=True)
+    # spouse_name = models.CharField(blank=True, max_length=100)
+    # date_of_birth = models.DateField(blank=True, null=True)
 
     last_subscription = models.DateTimeField(default=None, blank=True, null=True)
     duration_subscription = models.DurationField(default=datetime.timedelta(days=0))
@@ -37,3 +39,6 @@ class CustomUser(AbstractUser):
         return False
 
     is_subscribed.boolean = True
+
+    def __str__(self):
+        return self.first_name
